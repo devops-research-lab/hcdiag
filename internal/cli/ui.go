@@ -22,13 +22,13 @@ type BasicUi struct {
 }
 
 func (u *BasicUi) Output(s string) {
-	fmt.Fprintln(u.Writer, s)
+	_, _ = fmt.Fprintln(u.Writer, s)
 }
 
 func (u *BasicUi) Warn(s string) {
-	fmt.Fprintln(u.ErrorWriter, s)
+	_, _ = fmt.Fprintln(u.ErrorWriter, s)
 }
 
 func (u *BasicUi) Error(s string) {
-	fmt.Fprintln(u.ErrorWriter, s)
+	_, _ = fmt.Fprintln(u.ErrorWriter, s)
 }
