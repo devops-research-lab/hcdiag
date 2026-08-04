@@ -106,6 +106,24 @@ func TestCLI_Run_Help(t *testing.T) {
 	assert.True(t, helpCalled)
 }
 
+func TestCLI_Run_UnknownCommandPrintsHelp(t *testing.T) {
+	helpCalled := false
+	c := &CLI{
+		Args: []string{"notacommand"},
+		Commands: map[string]CommandFactory{
+			"run": factory(&stubCommand{}),
+		},
+		HelpFunc: func(cmds map[string]CommandFactory) string {
+			helpCalled = true
+			return "help text"
+		},
+	}
+	code, err := c.Run()
+	require.NoError(t, err)
+	assert.Equal(t, 127, code)
+	assert.True(t, helpCalled, "HelpFunc should be called for unknown commands")
+}
+
 func TestCLI_Run_HiddenCommandsExcludedFromHelp(t *testing.T) {
 	var helpCmds map[string]CommandFactory
 	c := &CLI{

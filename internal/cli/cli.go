@@ -58,6 +58,9 @@ func (c *CLI) Run() (int, error) {
 
 	factory, ok := c.Commands[name]
 	if !ok {
+		if c.HelpFunc != nil {
+			fmt.Print(c.HelpFunc(c.visibleCommands()))
+		}
 		return 127, nil
 	}
 
