@@ -1,37 +1,24 @@
 name: test
-
-on: [workflow_dispatch, push]
-
+on:
+  push: null
 jobs:
   get-go-version:
-    name: "Determine Go toolchain version"
     runs-on: ubuntu-latest
     outputs:
       go-version: ${{ steps.get-go-version.outputs.go-version }}
     steps:
-      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
-      - name: Determine Go version
-        id: get-go-version
-        # We use .go-version as our source of truth for current Go
-        # version, because "goenv" can react to it automatically.
-        run: |
-          echo "Building with Go $(cat .go-version)"
-          echo "::set-output name=go-version::$(cat .go-version)"
+    - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab
+    - name: Determine Go version
+      id: get-go-version
+      run: 'echo "Building with Go $(cat .go-version)"
 
-  test:
-    name: "Run unit tests"
+        echo "go-version=$(cat .go-version)" >> $GITHUB_OUTPUT
 
-    needs:
-      - get-go-version
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
-
+        '
+    - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab
     - name: Set up Go
-      uses: actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32 # v5.0.2
+      uses: actions/setup-go@4d34df0c2316fe8122ab82dc22947d607c0c91f9
       with:
-        go-version: ${{ needs.get-go-version.outputs.go-version }}
-
+        go-version: ${{ steps.get-go-version.outputs.go-version }}
     - name: Test
       run: go test -v ./...
